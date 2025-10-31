@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+/*import React, { useState } from "react";
 import { Pencil, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -88,7 +88,7 @@ const LeadSource = () => {
   return (
     <div className="flex justify-center mt-6 px-3">
       <div className="bg-white rounded-lg overflow-hidden w-full max-w-[1300px] shadow-lg hover:shadow-xl transition-shadow duration-300">
-        {/* Header */}
+        { Header }
         <div className="flex justify-between items-center p-4 border-b border-gray-300 flex-wrap gap-3">
           <h2 className="text-lg md:text-xl font-bold text-gray-800">
             Lead Source
@@ -101,7 +101,7 @@ const LeadSource = () => {
           </button>
         </div>
 
-        {/* ✅ Search bar with button */}
+        { ✅ Search bar with button }
         <div className="flex justify-end items-center p-4 border-b border-gray-200">
           <div className="flex items-center gap-2">
             <input
@@ -120,7 +120,7 @@ const LeadSource = () => {
           </div>
         </div>
 
-        {/* Table */}
+        { Table }
         <div className="overflow-x-auto p-3 md:p-4">
           <table className="w-full text-sm text-gray-700 border-x border-b border-gray-300 table-auto">
             <thead className="bg-gray-300">
@@ -249,8 +249,8 @@ const LeadSource = () => {
           </table>
         </div>
       </div>
-{/* hi */}
-      {/* Modal near top */}
+{ hi }
+      { Modal near top }
       <AnimatePresence>
         {showModal && (
           <motion.div
@@ -307,4 +307,4 @@ const LeadSource = () => {
   );
 };
 
-export default LeadSource;
+export default LeadSource;*/
