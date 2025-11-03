@@ -1,34 +1,38 @@
-import React, { useState } from "react";
+/*import React, { useState } from "react";
 import { Pencil, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const ProductTable = () => {
+const LeadStatusTable = () => {
   const [selectAll, setSelectAll] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [editId, setEditId] = useState(null);
   const [editValue, setEditValue] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [newProduct, setNewProduct] = useState("");
+  const [newStatus, setNewStatus] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [products, setProducts] = useState([
-    { id: 1, name: "Bandhani" },
-    { id: 2, name: "Galaxy S1" },
-    { id: 3, name: "Galaxy S2" },
-    { id: 4, name: "Lenovo Ideapad" },
+  const [statuses, setStatuses] = useState([
+    { id: 1, name: "Closed" },
+    { id: 2, name: "Open" },
+    { id: 3, name: "Pending" },
+    { id: 4, name: "Special" },
   ]);
 
-  // ✅ Filter logic
-  const filteredProducts = products.filter((p) =>
-    p.name.toLowerCase().includes(searchTerm.toLowerCase())
+  Filter logic
+  const filteredStatuses = statuses.filter((status) =>
+    status.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // ✅ Select All
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
-    setSelectedRows(!selectAll ? filteredProducts.map((p) => p.id) : []);
+    setSelectedRows(
+      !selectAll
+        ? filteredStatuses
+            .filter((s) => s.name === "Special") // ✅ only selectable rows
+            .map((s) => s.id)
+        : []
+    );
   };
 
-  // ✅ Select single
   const handleSelectRow = (id) => {
     setSelectedRows((prev) =>
       prev.includes(id)
@@ -37,7 +41,6 @@ const ProductTable = () => {
     );
   };
 
-  // ✅ Edit
   const handleEdit = (id, currentName) => {
     setEditId(id);
     setEditValue(currentName);
@@ -49,68 +52,69 @@ const ProductTable = () => {
   };
 
   const handleUpdate = (id) => {
-    setProducts((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, name: editValue } : p))
+    setStatuses((prev) =>
+      prev.map((status) =>
+        status.id === id ? { ...status, name: editValue } : status
+      )
     );
     setEditId(null);
   };
 
-  // ✅ Delete single
   const handleDelete = (id) => {
-    setProducts((prev) => prev.filter((p) => p.id !== id));
+    setStatuses((prev) => prev.filter((status) => status.id !== id));
     setSelectedRows((prev) => prev.filter((rowId) => rowId !== id));
   };
 
-  // ✅ Delete selected
   const handleDeleteSelected = () => {
     if (selectedRows.length === 0) {
       alert("Please select at least one record to delete.");
       return;
     }
-    setProducts((prev) => prev.filter((p) => !selectedRows.includes(p.id)));
+    setStatuses((prev) =>
+      prev.filter((status) => !selectedRows.includes(status.id))
+    );
     setSelectedRows([]);
     setSelectAll(false);
   };
 
-  // ✅ Save new product
-  const handleSaveProduct = () => {
-    if (newProduct.trim() === "") {
-      alert("Please enter a product name.");
+  const handleSaveStatus = () => {
+    if (newStatus.trim() === "") {
+      alert("Please enter a lead status name.");
       return;
     }
 
     const newEntry = {
-      id: products.length + 1,
-      name: newProduct.trim(),
+      id: statuses.length + 1,
+      name: newStatus.trim(),
     };
 
-    setProducts([...products, newEntry]);
-    setNewProduct("");
+    setStatuses([...statuses, newEntry]);
+    setNewStatus("");
     setShowModal(false);
   };
 
   return (
     <div className="flex justify-center mt-6 px-3">
       <div className="bg-white rounded-lg overflow-hidden w-full max-w-[1300px] shadow-lg hover:shadow-xl transition-shadow duration-300">
-        {/* Header */}
+        { Header }
         <div className="flex justify-between items-center p-4 border-b border-gray-300 flex-wrap gap-3">
           <h2 className="text-lg md:text-xl font-bold text-gray-800">
-            Products
+            Lead Status
           </h2>
           <button
             onClick={() => setShowModal(true)}
             className="bg-[#0d223f] text-white px-4 py-2 rounded-md hover:bg-[#1b3353] transition duration-200 text-sm md:text-base"
           >
-            Add Product
+            Add Lead Status
           </button>
         </div>
 
-        {/* Search bar */}
+        { Search bar }
         <div className="flex justify-end items-center p-4 border-b border-gray-200">
           <div className="flex items-center gap-2">
             <input
               type="text"
-              placeholder="Product Name"
+              placeholder="Lead Status"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="border border-gray-300 rounded-md px-3 py-2 w-[200px] focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -124,7 +128,7 @@ const ProductTable = () => {
           </div>
         </div>
 
-        {/* Table */}
+        { Table }
         <div className="overflow-x-auto p-3 md:p-4">
           <table className="w-full text-sm text-gray-700 border-x border-b border-gray-300 table-auto">
             <thead className="bg-gray-300">
@@ -133,8 +137,11 @@ const ProductTable = () => {
                   <input
                     type="checkbox"
                     checked={
-                      filteredProducts.length > 0 &&
-                      selectedRows.length === filteredProducts.length
+                      filteredStatuses.filter((s) => s.name === "Special")
+                        .length > 0 &&
+                      selectedRows.length ===
+                        filteredStatuses.filter((s) => s.name === "Special")
+                          .length
                     }
                     onChange={handleSelectAll}
                     className="w-5 h-5 accent-blue-600 cursor-pointer"
@@ -142,30 +149,34 @@ const ProductTable = () => {
                 </th>
                 <th className="px-4 py-3 text-left font-semibold">SR. NO.</th>
                 <th className="px-4 py-3 text-left font-semibold">
-                  PRODUCT NAME
+                  LEAD STATUS
                 </th>
                 <th className="px-4 py-3 text-center font-semibold">EDIT</th>
                 <th className="px-4 py-3 text-center font-semibold">DELETE</th>
                 <th className="px-4 py-3 text-center font-semibold w-[20%]">
-                  VIEW LEADS
+                  VIEW LEAD
                 </th>
               </tr>
             </thead>
 
             <tbody>
-              {filteredProducts.length > 0 ? (
-                filteredProducts.map((p, index) => (
+              {filteredStatuses.length > 0 ? (
+                filteredStatuses.map((s, index) => (
                   <tr
-                    key={p.id}
+                    key={s.id}
                     className="hover:bg-gray-50 text-left border-t border-gray-300"
                   >
                     <td className="px-4 py-3 text-center align-middle">
-                      <input
-                        type="checkbox"
-                        checked={selectedRows.includes(p.id)}
-                        onChange={() => handleSelectRow(p.id)}
-                        className="w-5 h-5 accent-blue-600 cursor-pointer"
-                      />
+                      {s.name === "Special" ? (
+                        <input
+                          type="checkbox"
+                          checked={selectedRows.includes(s.id)}
+                          onChange={() => handleSelectRow(s.id)}
+                          className="w-5 h-5 accent-blue-600 cursor-pointer"
+                        />
+                      ) : (
+                        "--"
+                      )}
                     </td>
 
                     <td className="px-4 py-3 border-l border-gray-300 font-medium align-middle">
@@ -173,7 +184,7 @@ const ProductTable = () => {
                     </td>
 
                     <td className="px-4 py-3 border-l border-gray-300 align-middle">
-                      {editId === p.id ? (
+                      {editId === s.id ? (
                         <input
                           type="text"
                           value={editValue}
@@ -181,44 +192,34 @@ const ProductTable = () => {
                           className="border border-gray-300 rounded-md px-2 py-1 w-56 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                         />
                       ) : (
-                        p.name
+                        s.name
                       )}
                     </td>
 
                     <td className="px-4 py-3 border-l border-gray-300 text-center align-middle">
-                      {editId === p.id ? (
-                        <div className="flex justify-center gap-3 font-semibold">
-                          <button
-                            onClick={() => handleUpdate(p.id)}
-                            className="text-green-700"
-                          >
-                            Update
-                          </button>
-                          <span>|</span>
-                          <button
-                            onClick={handleCancel}
-                            className="text-red-600"
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      ) : (
+                      {s.name === "Special" ? (
                         <button
-                          onClick={() => handleEdit(p.id, p.name)}
+                          onClick={() => handleEdit(s.id, s.name)}
                           className="text-gray-700 hover:text-blue-600 transition-transform duration-200 hover:scale-110 flex justify-center items-center w-full"
                         >
                           <Pencil size={18} />
                         </button>
+                      ) : (
+                        "--"
                       )}
                     </td>
 
                     <td className="px-4 py-3 border-l border-gray-300 text-center align-middle">
-                      <button
-                        onClick={() => handleDelete(p.id)}
-                        className="text-gray-700 hover:text-red-600 transition-transform duration-200 hover:scale-110 flex justify-center items-center w-full"
-                      >
-                        <Trash2 size={18} />
-                      </button>
+                      {s.name === "Special" ? (
+                        <button
+                          onClick={() => handleDelete(s.id)}
+                          className="text-gray-700 hover:text-red-600 transition-transform duration-200 hover:scale-110 flex justify-center items-center w-full"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      ) : (
+                        "--"
+                      )}
                     </td>
 
                     <td className="px-4 py-3 border-l border-gray-300 text-center align-middle">
@@ -254,7 +255,7 @@ const ProductTable = () => {
         </div>
       </div>
 
-      {/* Modal */}
+      { Modal near top }
       <AnimatePresence>
         {showModal && (
           <motion.div
@@ -272,26 +273,26 @@ const ProductTable = () => {
             >
               <div className="border-b px-5 py-3">
                 <h3 className="text-center text-gray-800 font-semibold text-base">
-                  Add Product
+                  Add Lead Status
                 </h3>
               </div>
 
               <div className="p-6 text-left bg-[#e9edf2]">
                 <label className="block mb-2 text-gray-700 font-semibold">
-                  Product Name
+                  Lead Status
                 </label>
                 <input
                   type="text"
-                  placeholder="Product Name"
-                  value={newProduct}
-                  onChange={(e) => setNewProduct(e.target.value)}
+                  placeholder="Lead Status"
+                  value={newStatus}
+                  onChange={(e) => setNewStatus(e.target.value)}
                   className="w-[70%] border border-gray-300 rounded-md px-3 py-2 focus:outline-none bg-white focus:ring-2 focus:ring-sky-400"
                 />
               </div>
 
               <div className="border-t px-5 py-3 flex justify-end gap-3">
                 <button
-                  onClick={handleSaveProduct}
+                  onClick={handleSaveStatus}
                   className="bg-sky-500 text-white px-5 py-2 rounded-md hover:bg-sky-600 transition duration-200"
                 >
                   Save
@@ -311,4 +312,4 @@ const ProductTable = () => {
   );
 };
 
-export default ProductTable;
+export default LeadStatusTable;*/

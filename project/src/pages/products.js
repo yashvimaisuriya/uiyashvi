@@ -2,37 +2,33 @@ import React, { useState } from "react";
 import { Pencil, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const CategoryTable = () => {
-  const [categories, setCategories] = useState([
-    { id: 1, name: "Electronics" },
-    { id: 2, name: "Food" },
-    { id: 3, name: "Grocery" },
-    { id: 4, name: "Laptops" },
-    { id: 5, name: "Mobile Phones" },
-    { id: 6, name: "Sarees" },
-  ]);
-
-  const [search, setSearch] = useState("");
+const ProductTable = () => {
+  const [selectAll, setSelectAll] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [editId, setEditId] = useState(null);
   const [editValue, setEditValue] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [newCategory, setNewCategory] = useState("");
+  const [newProduct, setNewProduct] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [products, setProducts] = useState([
+    { id: 1, name: "Bandhani" },
+    { id: 2, name: "Galaxy S1" },
+    { id: 3, name: "Galaxy S2" },
+    { id: 4, name: "Lenovo Ideapad" },
+  ]);
 
-  // Filter logic
-  const filteredCategories = categories.filter((c) =>
-    c.name.toLowerCase().includes(search.toLowerCase())
+  // ✅ Filter logic
+  const filteredProducts = products.filter((p) =>
+    p.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Select all toggle
+  // ✅ Select All
   const handleSelectAll = () => {
-    if (selectedRows.length === filteredCategories.length) {
-      setSelectedRows([]);
-    } else {
-      setSelectedRows(filteredCategories.map((c) => c.id));
-    }
+    setSelectAll(!selectAll);
+    setSelectedRows(!selectAll ? filteredProducts.map((p) => p.id) : []);
   };
 
+  // ✅ Select single
   const handleSelectRow = (id) => {
     setSelectedRows((prev) =>
       prev.includes(id)
@@ -41,6 +37,7 @@ const CategoryTable = () => {
     );
   };
 
+  // ✅ Edit
   const handleEdit = (id, currentName) => {
     setEditId(id);
     setEditValue(currentName);
@@ -52,42 +49,43 @@ const CategoryTable = () => {
   };
 
   const handleUpdate = (id) => {
-    setCategories((prev) =>
-      prev.map((cat) =>
-        cat.id === id ? { ...cat, name: editValue } : cat
-      )
+    setProducts((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, name: editValue } : p))
     );
     setEditId(null);
-    setEditValue("");
   };
 
+  // ✅ Delete single
   const handleDelete = (id) => {
-    setCategories((prev) => prev.filter((c) => c.id !== id));
+    setProducts((prev) => prev.filter((p) => p.id !== id));
     setSelectedRows((prev) => prev.filter((rowId) => rowId !== id));
   };
 
+  // ✅ Delete selected
   const handleDeleteSelected = () => {
     if (selectedRows.length === 0) {
-      alert("Please select at least one category to delete.");
+      alert("Please select at least one record to delete.");
       return;
     }
-    setCategories((prev) => prev.filter((c) => !selectedRows.includes(c.id)));
+    setProducts((prev) => prev.filter((p) => !selectedRows.includes(p.id)));
     setSelectedRows([]);
+    setSelectAll(false);
   };
 
-  const handleSaveCategory = () => {
-    if (newCategory.trim() === "") {
-      alert("Please enter a category name.");
+  // ✅ Save new product
+  const handleSaveProduct = () => {
+    if (newProduct.trim() === "") {
+      alert("Please enter a product name.");
       return;
     }
 
     const newEntry = {
-      id: categories.length + 1,
-      name: newCategory.trim(),
+      id: products.length + 1,
+      name: newProduct.trim(),
     };
 
-    setCategories([...categories, newEntry]);
-    setNewCategory("");
+    setProducts([...products, newEntry]);
+    setNewProduct("");
     setShowModal(false);
   };
 
@@ -97,24 +95,24 @@ const CategoryTable = () => {
         {/* Header */}
         <div className="flex justify-between items-center p-4 border-b border-gray-300 flex-wrap gap-3">
           <h2 className="text-lg md:text-xl font-bold text-gray-800">
-            Categories
+            Products
           </h2>
           <button
             onClick={() => setShowModal(true)}
             className="bg-[#0d223f] text-white px-4 py-2 rounded-md hover:bg-[#1b3353] transition duration-200 text-sm md:text-base"
           >
-            Add Category
+            Add Product
           </button>
         </div>
 
-        {/* Search Bar */}
+        {/* Search bar */}
         <div className="flex justify-end items-center p-4 border-b border-gray-200">
           <div className="flex items-center gap-2">
             <input
               type="text"
-              placeholder="Category Name"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Product Name"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="border border-gray-300 rounded-md px-3 py-2 w-[200px] focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
             <button
@@ -135,8 +133,8 @@ const CategoryTable = () => {
                   <input
                     type="checkbox"
                     checked={
-                      filteredCategories.length > 0 &&
-                      selectedRows.length === filteredCategories.length
+                      filteredProducts.length > 0 &&
+                      selectedRows.length === filteredProducts.length
                     }
                     onChange={handleSelectAll}
                     className="w-5 h-5 accent-blue-600 cursor-pointer"
@@ -144,7 +142,7 @@ const CategoryTable = () => {
                 </th>
                 <th className="px-4 py-3 text-left font-semibold">SR. NO.</th>
                 <th className="px-4 py-3 text-left font-semibold">
-                  CATEGORY NAME
+                  PRODUCT NAME
                 </th>
                 <th className="px-4 py-3 text-center font-semibold">EDIT</th>
                 <th className="px-4 py-3 text-center font-semibold">DELETE</th>
@@ -155,17 +153,17 @@ const CategoryTable = () => {
             </thead>
 
             <tbody>
-              {filteredCategories.length > 0 ? (
-                filteredCategories.map((cat, index) => (
+              {filteredProducts.length > 0 ? (
+                filteredProducts.map((p, index) => (
                   <tr
-                    key={cat.id}
+                    key={p.id}
                     className="hover:bg-gray-50 text-left border-t border-gray-300"
                   >
                     <td className="px-4 py-3 text-center align-middle">
                       <input
                         type="checkbox"
-                        checked={selectedRows.includes(cat.id)}
-                        onChange={() => handleSelectRow(cat.id)}
+                        checked={selectedRows.includes(p.id)}
+                        onChange={() => handleSelectRow(p.id)}
                         className="w-5 h-5 accent-blue-600 cursor-pointer"
                       />
                     </td>
@@ -175,7 +173,7 @@ const CategoryTable = () => {
                     </td>
 
                     <td className="px-4 py-3 border-l border-gray-300 align-middle">
-                      {editId === cat.id ? (
+                      {editId === p.id ? (
                         <input
                           type="text"
                           value={editValue}
@@ -183,15 +181,15 @@ const CategoryTable = () => {
                           className="border border-gray-300 rounded-md px-2 py-1 w-56 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                         />
                       ) : (
-                        cat.name
+                        p.name
                       )}
                     </td>
 
                     <td className="px-4 py-3 border-l border-gray-300 text-center align-middle">
-                      {editId === cat.id ? (
+                      {editId === p.id ? (
                         <div className="flex justify-center gap-3 font-semibold">
                           <button
-                            onClick={() => handleUpdate(cat.id)}
+                            onClick={() => handleUpdate(p.id)}
                             className="text-green-700"
                           >
                             Update
@@ -206,7 +204,7 @@ const CategoryTable = () => {
                         </div>
                       ) : (
                         <button
-                          onClick={() => handleEdit(cat.id, cat.name)}
+                          onClick={() => handleEdit(p.id, p.name)}
                           className="text-gray-700 hover:text-blue-600 transition-transform duration-200 hover:scale-110 flex justify-center items-center w-full"
                         >
                           <Pencil size={18} />
@@ -216,7 +214,7 @@ const CategoryTable = () => {
 
                     <td className="px-4 py-3 border-l border-gray-300 text-center align-middle">
                       <button
-                        onClick={() => handleDelete(cat.id)}
+                        onClick={() => handleDelete(p.id)}
                         className="text-gray-700 hover:text-red-600 transition-transform duration-200 hover:scale-110 flex justify-center items-center w-full"
                       >
                         <Trash2 size={18} />
@@ -274,26 +272,26 @@ const CategoryTable = () => {
             >
               <div className="border-b px-5 py-3">
                 <h3 className="text-center text-gray-800 font-semibold text-base">
-                  Add Category
+                  Add Product
                 </h3>
               </div>
 
               <div className="p-6 text-left bg-[#e9edf2]">
                 <label className="block mb-2 text-gray-700 font-semibold">
-                  Category Name
+                  Product Name
                 </label>
                 <input
                   type="text"
-                  placeholder="Category Name"
-                  value={newCategory}
-                  onChange={(e) => setNewCategory(e.target.value)}
+                  placeholder="Product Name"
+                  value={newProduct}
+                  onChange={(e) => setNewProduct(e.target.value)}
                   className="w-[70%] border border-gray-300 rounded-md px-3 py-2 focus:outline-none bg-white focus:ring-2 focus:ring-sky-400"
                 />
               </div>
 
               <div className="border-t px-5 py-3 flex justify-end gap-3">
                 <button
-                  onClick={handleSaveCategory}
+                  onClick={handleSaveProduct}
                   className="bg-sky-500 text-white px-5 py-2 rounded-md hover:bg-sky-600 transition duration-200"
                 >
                   Save
@@ -313,4 +311,4 @@ const CategoryTable = () => {
   );
 };
 
-export default CategoryTable;
+export default ProductTable;
