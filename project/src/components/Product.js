@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+/*import React, { useState } from "react";
 import { FaTrash, FaPen } from "react-icons/fa";
 
 const ProductsTable = () => {
@@ -16,7 +16,7 @@ const ProductsTable = () => {
   const [showModal, setShowModal] = useState(false);
   const [newProduct, setNewProduct] = useState("");
 
-  // ✅ Checkbox Handling
+   ✅ Checkbox Handling
   const handleSelectAll = () => {
     const newSelectAll = !selectAll;
     setSelectAll(newSelectAll);
@@ -29,7 +29,7 @@ const ProductsTable = () => {
     );
   };
 
-  // ✅ Edit, Update, Cancel
+   ✅ Edit, Update, Cancel
   const handleEdit = (id, name) => {
     setEditingId(id);
     setEditName(name);
@@ -48,7 +48,7 @@ const ProductsTable = () => {
     setEditName("");
   };
 
-  // ✅ Delete
+   ✅ Delete
   const handleDelete = (id) => {
     setProducts((prev) => prev.filter((p) => p.id !== id));
   };
@@ -59,12 +59,12 @@ const ProductsTable = () => {
     setSelectAll(false);
   };
 
-  // ✅ Search
+   ✅ Search
   const filteredProducts = products.filter((p) =>
     p.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // ✅ Add Product
+   ✅ Add Product
   const handleAddProduct = () => {
     if (newProduct.trim() === "") return alert("Enter product name");
     const newItem = {
@@ -79,7 +79,7 @@ const ProductsTable = () => {
   return (
     <div className="min-h-screen flex justify-center items-start mt-4 px-3 sm:px-6 py-4 bg-[#f4f5f7]">
       <div className="bg-white rounded-md shadow-md w-full max-w-[1100px] border border-gray-300">
-        {/* Header */}
+        { Header }
         <div className="flex justify-between items-center px-5 py-4 border-b border-gray-300 bg-white rounded-t-md shadow-sm">
           <h2 className="text-lg font-semibold text-gray-800">Products</h2>
           <button
@@ -90,7 +90,7 @@ const ProductsTable = () => {
           </button>
         </div>
 
-        {/* Search */}
+        { Search }
         <div className="flex justify-end items-center p-4 bg-white">
           <div className="flex items-center gap-2">
             <input
@@ -106,7 +106,7 @@ const ProductsTable = () => {
           </div>
         </div>
 
-        {/* 🖥️ Desktop Table */}
+        { 🖥️ Desktop Table }
         <div className="p-4 overflow-x-auto hidden sm:block">
           <table className="w-full border-collapse text-sm">
             <thead
@@ -199,7 +199,7 @@ const ProductsTable = () => {
                 </tr>
               ))}
 
-              {/* ✅ Delete Selected Row (inside table) */}
+              { ✅ Delete Selected Row (inside table) }
               {products.length > 0 && (
                 <tr className="border-t border-l border-b border-r">
                   <td colSpan="6" className="text-left border-t px-4 py-3 bg-white">
@@ -216,10 +216,10 @@ const ProductsTable = () => {
           </table>
         </div>
 
-        {/* 📱 Mobile Cards */}
+        { 📱 Mobile Cards }
         <div className="block sm:hidden p-4">
           <div className="border border-gray-300 rounded-md overflow-hidden">
-            {/* Select All */}
+            {Select All }
             <div className="bg-gray-100 p-3 border-b border-gray-300">
               <label className="block text-gray-700 text-sm font-medium mb-2">
                 SELECT ALL
@@ -232,18 +232,18 @@ const ProductsTable = () => {
               />
             </div>
 
-            {/* Header */}
+            { Header }
             <div className="bg-[#e0e0e0] p-3 text-left font-semibold text-gray-700 text-sm border-b border-gray-300">
               VIEW LEAD
             </div>
 
-            {/* Cards */}
+            { Cards }
             {filteredProducts.map((p, index) => (
               <div
                 key={p.id}
                 className="p-0 border-b border-gray-300 bg-white last:border-b-0"
               >
-                {/* SR NO */}
+                { SR NO }
                 <div className="flex justify-left items-center px-3 py-2 border-b border-gray-200">
                   <span className="font-semibold text-gray-700 text-sm">
                     SR NO :
@@ -251,7 +251,7 @@ const ProductsTable = () => {
                   <span className="text-gray-700 text-sm">{index + 1}</span>
                 </div>
 
-                {/* Product Name */}
+                {/Product Name }
                 <div className="flex justify-left items-center px-3 py-2 border-b border-gray-200">
                   <span className="font-semibold text-gray-700 text-sm">
                     Product Name :
@@ -268,7 +268,7 @@ const ProductsTable = () => {
                   )}
                 </div>
 
-                {/* Edit */}
+                { Edit }
                 <div className="flex justify-left items-center px-3 py-2 border-b border-gray-200">
                   <span className="font-semibold text-gray-700 text-sm">
                     Edit :
@@ -298,7 +298,7 @@ const ProductsTable = () => {
                   )}
                 </div>
 
-                {/* Delete */}
+                { Delete }
                 <div className="flex justify-left items-center px-3 py-2 border-b border-gray-200">
                   <span className="font-semibold text-gray-700 text-sm">
                     Delete :
@@ -311,7 +311,7 @@ const ProductsTable = () => {
                   </button>
                 </div>
 
-                {/* ✅ Fixed-size View Leads Button */}
+                { ✅ Fixed-size View Leads Button }
                 <div className="flex justify-left bg-white pt-4 pb-5 pl-2">
                   <button
                     className="bg-[#dc3545] hover:bg-[#bb2d3b] text-white text-sm font-medium py-2 rounded-md shadow-sm transition-all"
@@ -326,7 +326,7 @@ const ProductsTable = () => {
               </div>
             ))}
 
-            {/* ✅ Delete Selected */}
+            { ✅ Delete Selected }
             <div className="flex justify-left mt-3 mb-3 px-3">
               <button
                 onClick={handleDeleteSelected}
@@ -338,7 +338,7 @@ const ProductsTable = () => {
           </div>
         </div>
 
-        {/* Add Product Modal */}
+        { Add Product Modal }
         {showModal && (
           <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-start z-50">
             <div className="bg-white rounded-lg shadow-lg w-[90%] sm:w-[500px] mt-16 animate-[slideDown_0.4s_ease-out]">
@@ -392,4 +392,4 @@ const ProductsTable = () => {
   );
 };
 
-export default ProductsTable;
+export default ProductsTable;*/

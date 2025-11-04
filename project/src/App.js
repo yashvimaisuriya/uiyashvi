@@ -1,13 +1,13 @@
 import React from 'react';
-import Product from './components/Product';
-
+//import Product from './components/Product';
+import CategoryTable from "./pages/CategoryTable";
 
 
 function App() {
   return (
     <div className="App">
-     <Product />
-     {/* <h1>Hello </h1> */}
+     <CategoryTable />
+    
     </div>
   );
 }
