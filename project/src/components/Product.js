@@ -392,4 +392,4 @@ const ProductsTable = () => {
   );
 };
 
-export default ProductsTable;*/
+export default ProductsTable;
